@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Мега Бонуска</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial Black', sans-serif;
+      background: #000;
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 28px;
+      color: gold;
+      text-shadow: 0 0 10px gold;
+    }
+
+    #chances {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .slot-container {
+      position: relative;
+      width: 300px;
+      height: 150px;
+      margin: 20px auto;
+      overflow: hidden;
+      border: 3px solid gold;
+      border-radius: 10px;
+      background: #111;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      right: -25px;
+      transform: translateY(-50%) rotate(180deg);
+      font-size: 30px;
+      color: lime;
+      z-index: 10;
+    }
+
+    .reel {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      transition: transform 10s cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+
+    .slot-item {
+      height: 50px;
+      line-height: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #333;
+      border-top: 1px solid #444;
+      color: #fff;
+    }
+
+    .spin-btn, .claim-btn {
+      font-size: 20px;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .spin-btn {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+    }
+
+    .claim-btn {
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+      color: white;
+      display: none;
+    }
+
+    .disabled {
+      background: #555 !important;
+      cursor: default;
+    }
+
+    #promo-text {
+      margin-top: 20px;
+      color: #00ff00;
+      font-weight: bold;
+      display: none;
+    }
+
+    .fireworks {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .fireworks canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Мега Бонуска</h1>
+  <div id="chances">У вас попыток: <span id="attempts">1</span></div>
+
+  <div class="slot-container">
+    <div class="arrow">➤</div>
+    <div class="reel" id="reel"></div>
+  </div>
+
+  <button class="spin-btn" id="spinBtn">КРУТИТЬ</button>
+  <button class="claim-btn" id="claimBtn">ЗАБРАТЬ БОНУС</button>
+  <div id="promo-text">Сделайте депозит на <b>1WIN</b> от <b>2.000₽</b> и получите <b>ШАНС Х2</b>!</div>
+  <div class="fireworks" id="fireworks"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.3/dist/index.umd.js"></script>
+  <script>
+    const reel = document.getElementById("reel");
+    const spinBtn = document.getElementById("spinBtn");
+    const claimBtn = document.getElementById("claimBtn");
+    const promoText = document.getElementById("promo-text");
+    const fireworksEl = document.getElementById("fireworks");
+    const attemptsEl = document.getElementById("attempts");
+
+    const prizes = [
+      "25 FP", "+500% К ДЕПОЗИТУ", "БОНУСКА ЗА 30 000₽",
+      "ВАУЧЕР НА 10,000₽", "ШАНС Х2", "500 FP", "БОНУСКА ЗА 10 000₽", "50 FP"
+    ];
+
+    const createSlots = () => {
+      for (let i = 0; i < 40; i++) {
+        const div = document.createElement("div");
+        div.className = "slot-item";
+        div.innerText = prizes[i % prizes.length];
+        reel.appendChild(div);
+      }
+    };
+
+    createSlots();
+
+    const fw = new Fireworks.default(fireworksEl, { autoresize: true });
+
+    spinBtn.onclick = () => {
+      if (parseInt(attemptsEl.innerText) <= 0) return;
+      spinBtn.disabled = true;
+      spinBtn.classList.add("disabled");
+
+      const slotHeight = 50;
+      const visibleSlotIndex = 1;
+      const items = reel.children;
+
+      // Целимся в ШАНС Х2, чтобы он оказался во втором (центральном) слоте
+      let targetIndex = -1;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].innerText.trim() === "ШАНС Х2") {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      const offset = -(targetIndex - (visibleSlotIndex)) * slotHeight;
+      reel.style.transition = "transform 10s cubic-bezier(0.2, 0.8, 0.4, 1)";
+      reel.style.transform = `translateY(${offset}px)`;
+
+      setTimeout(() => {
+        fw.start();
+        promoText.style.display = "block";
+        claimBtn.style.display = "inline-block";
+        setTimeout(() => fw.stop(), 4000);
+      }, 10000);
+
+      attemptsEl.innerText = "0";
+    };
+
+    claimBtn.onclick = () => {
+      window.location.href = "https://lkhq.cc/24e8";
+    };
+  </script>
+</body>
+</html>
